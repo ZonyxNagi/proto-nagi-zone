@@ -1,0 +1,358 @@
+syntax = "proto3";
+
+// This document describes the Nagi Zone API.
+// It is used to generate the API documentation and client libraries.
+package nagi.zone.v1;
+
+import "google/api/annotations.proto";
+import "buf/validate/validate.proto"; // https://github.com/bufbuild/protovalidate
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "gen/go";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+      title: "Nagi Zone API";
+      version: "1.0.0";
+      contact: {
+          name: "Zonyx Nagi";
+          url: "https://nagi.es";
+          email: "develop@nagi.com";
+      };
+  };
+
+  schemes: HTTPS;
+  consumes: "application/json";
+  produces: "application/json";
+};
+
+// Lap
+//
+// Lap is a single lap in a swimming session.
+message Lap {
+  // start_time is the start time of the lap.
+  // This is the time when the lap started, in milliseconds since epoch.
+  uint64 start_time = 1 [(buf.validate.field).uint64 = {gt: 0}];
+  // end_time is the end time of the lap.
+  // This is the time when the lap ended, in milliseconds since epoch.
+  uint64 end_time = 2 [(buf.validate.field).uint64 = {gt: 0}];
+  // duration is the duration of the lap.
+  // This is the time spent swimming the lap, in milliseconds.
+  uint32 duration = 3 [(buf.validate.field).uint32 = {gt: 0}];
+  // distance is the distance of the lap.
+  // This is the distance swum during the lap, in meters.
+  uint32 distance = 4 [(buf.validate.field).uint32 = {gt: 0}];
+}
+
+// Session
+//
+// Session is a single swimming session for a user.
+message Session {
+  // id is the ID of the session.
+  // This is the ID of the session in the system.
+  string id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // facility_id is the ID of the facility.
+  // This is the ID of the facility where the session took place.
+  string facility_id = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // pool_id is the ID of the pool.
+  // This is the ID of the swimming pool where the session took place.
+  string pool_id = 3 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // tag_id is the ID of the tag.
+  // This is the ID of the tag used to identify the user in the Quupa system.
+  string tag_id = 4 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // device_id is the ID to link the session to a user. (wristband/card)
+  // This is used to link the session to a user in the system.
+  string device_id = 5 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // date is the date of the session in ISO 8601 format.
+  // For example: "2023-05-23T14:30:00Z"
+  string date = 6 [(buf.validate.field).string = {
+    pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+  }];
+  // start_time is the start time of the session.
+  // This is the time when the session started, in milliseconds since epoch.
+  uint64 start_time = 7 [(buf.validate.field).uint64 = {gt: 0}];
+  // end_time is the end time of the session.
+  // This is the time when the session ended, in milliseconds since epoch.
+  uint64 end_time = 8 [(buf.validate.field).uint64 = {gt: 0}];  
+  // duration is the duration of the session.
+  // This is the time spent swimming and resting, in milliseconds.
+  uint32 duration = 9 [(buf.validate.field).uint32 = {gt: 0}];
+  // swim_time is the swim time of the session.
+  // This is the time spent swimming, in milliseconds.
+  uint32 swim_time = 10 [(buf.validate.field).uint32 = {gt: 0}];
+  // rest_time is the rest time of the session.
+  // This is the time spent resting, in milliseconds.
+  uint32 rest_time = 11 [(buf.validate.field).uint32 = {gt: 0}];
+  // distance is the distance of the session.
+  // This is the distance swum during the session, in meters.
+  uint32 distance = 12 [(buf.validate.field).uint32 = {gt: 0}];
+  // pace is the pace of the session.
+  // This is the average pace of the session, in seconds per 100 meters.
+  float pace = 13 [(buf.validate.field).float = {gt: 0}];  
+  // laps is the laps of the session.
+  // This is the laps swum during the session.
+  repeated Lap laps = 14 [(buf.validate.field).repeated = {min_items: 1}];
+}
+
+// PrivacyPolicy
+//
+// PrivacyPolicy is the privacy policy accepted by the user.
+message PrivacyPolicy {
+  // version is the current version of the privacy policy.
+  // This is the version of the privacy policy accepted by the user.
+  string version = 1 [(buf.validate.field).string = {min_len: 1, max_len: 3}];
+  // policy_date is the date when the privacy policy was created.
+  // This is the date when the privacy policy was created, in milliseconds since epoch.
+  uint64 policy_date = 2 [(buf.validate.field).uint64 = {gt: 0}];
+  // business_communications is the acceptance of business communications.
+  // This is the acceptance of business communications to the user.
+  bool business_communications = 3;
+  // marketing_segmentation is the acceptance of marketing segmentation.
+  // This is the acceptance of marketing segmentation for business purposes.
+  bool marketing_segmentation = 4;
+  // data_transfer is the acceptance of data transfer to third parties.
+  // This is the acceptance of data transfer to third parties for business purposes.
+  bool data_transfer = 5;
+}
+
+// User
+//
+// User represents a user in the system.
+message User {
+  // id is the ID of the user.
+  string id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // name is the name of the user.
+  string name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // email is the email address of the user.
+  string email = 3 [(buf.validate.field).string.email = true];
+  // photo is the photo of the user.
+  // This is the URL of the photo of the user.
+  string photo = 4 [(buf.validate.field).string = {min_len: 1, max_len: 128}];
+  // privacy_policies is the list of privacy policies accepted by the user.
+  // This is the list of privacy policies accepted by the user.
+  repeated PrivacyPolicy privacy_policies = 5;
+  // device_ids is the list of link IDs for the user. (wristband/card)
+  // This is the list of link IDs for the user in the system.
+  repeated string device_ids = 6 [(buf.validate.field).repeated = {
+    items: {string: {min_len: 6, max_len: 64}}
+  }];
+}
+
+// Stats
+//
+// Stats is the swimming stats for a user during a date range.
+message Stats {
+  // distance is the total distance swum, in meters.
+  uint32 distance = 1 [(buf.validate.field).uint32 = {gte: 0}];
+  // duration is the total duration of the sessions, in milliseconds.
+  uint32 duration = 2 [(buf.validate.field).uint32 = {gte: 0}];
+  // pace is the average pace of the sessions, in seconds per 100 meters.
+  float pace = 3 [(buf.validate.field).float = {gte: 0}];    
+  // laps is the number of laps swum for all sessions.
+  uint32 laps = 4 [(buf.validate.field).uint32 = {gte: 0}];
+}
+
+// CreateUserRequest
+//
+// CreateUserRequest is the request message for creating a new user.
+message CreateUserRequest {
+  string id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // name is the name of the user.
+  string name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // email is the email address of the user.
+  string email = 3 [(buf.validate.field).string.email = true];
+  // photo is the photo of the user.
+  optional string photo = 4 [(buf.validate.field).string = {min_len: 1, max_len: 128}];
+}
+
+// CreateUserResponse
+//
+// CreateUserResponse returns the created user.
+message CreateUserResponse {
+  // success indicates if the user creation was successful.
+  bool success = 1;
+}
+
+// GetUserRequest
+//
+// GetUserRequest is the request message for getting a user.
+message GetUserRequest {
+  // user_id is the ID of the user to get.
+  string user_id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+}
+
+// GetUserResponse
+//
+// GetUserResponse returns the requested user.
+message GetUserResponse {
+  // user is the requested user.
+  User user = 1;
+}
+
+// UpdateUserRequest
+//
+// UpdateUserRequest is the request message for updating a user.
+message UpdateUserRequest {
+  // user_id is the ID of the user to identify it.
+  string user_id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // name is the new name of the user.
+  optional string name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // email is the new email address of the user.
+  optional string email = 3 [(buf.validate.field).string.email = true];
+  // photo is the new photo of the user.
+  optional string photo = 4 [(buf.validate.field).string = {min_len: 1, max_len: 128}];
+  // privacy_policy is the new privacy policies accepted by the user.
+  optional PrivacyPolicy privacy_policy = 5;
+  // owner_ids is the new list of link IDs for the user.
+  // This is the new list of link IDs for the user in the system.
+  repeated string owner_ids = 6 [(buf.validate.field).repeated = {items: {string: {min_len: 1, max_len: 128}}}];
+}
+
+// UpdateUserResponse
+//
+// UpdateUserResponse returns if the user update was successful or not.
+message UpdateUserResponse {
+  // success indicates if the update was successful.
+  bool success = 1;
+}
+
+// DeleteUserRequest
+//
+// DeleteUserRequest is the request message for deleting a user.
+message DeleteUserRequest {
+  // user_id is the ID of the user to delete.
+  string user_id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+}
+
+// DeleteUserResponse
+//
+// DeleteUserResponse returns if the user deletion was successful.
+message DeleteUserResponse {
+  // success indicates if the deletion was successful.
+  bool success = 1;
+}
+
+// ListSessionsRequest
+//
+// ListSessionsRequest is the request message for listing sessions.
+message ListSessionsRequest {
+  // user_id is the ID of the user to get sessions for.
+  // This is the ID of the user in the system.
+  string user_id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // start_date is the start date for the sessions range in ISO 8601 format.
+  // For example: "2023-05-01"
+  optional string start_date = 2 [(buf.validate.field).string = {
+    pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+  }];
+  // end_date is the end date for the sessions range in ISO 8601 format.
+  // For example: "2023-05-31"
+  optional string end_date = 3 [(buf.validate.field).string = {
+    pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+  }];
+  // The offset is the value to use in the next request to continue receiving sessions.
+  // This is used for pagination.
+  optional string offset = 4 [(buf.validate.field).string = {min_len: 3, max_len: 64}];
+  // The limit is the maximum number of sessions to return.
+  // This is used for pagination.
+  optional uint32 limit = 5 [(buf.validate.field).uint32 = {gt: 0, lte: 50}];
+}
+
+// ListSessionsResponse
+//
+// ListSessionsResponse returns a list of sessions for the user.
+// The list is paginated, and the offset is used to continue receiving sessions.
+message ListSessionsResponse {
+  // sessions is the list of sessions for the user.
+  // This is a list of Session objects.
+  repeated Session sessions = 1;
+  // offset is the value to use in the next request to continue receiving sessions.
+  // This is used for pagination.
+  string offset = 2;
+}
+
+// GetStatsRequest
+//
+// GetStatsRequest is the request message for getting stats for a user.
+message GetStatsRequest {
+  // user_id is the ID of the user to get stats for.
+  // This is the ID of the user in the system.
+  string user_id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // start_date is the start date for the stats range in ISO 8601 format.
+  // For example: "2023-05-01"
+  optional string start_date = 2 [(buf.validate.field).string = {
+    pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+  }];
+  // end_date is the end date for the stats range in ISO 8601 format.
+  // For example: "2023-05-31"
+  optional string end_date = 3 [(buf.validate.field).string = {
+    pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+  }];
+}
+
+// GetStatsResponse
+//
+// GetStatsResponse returns the swimming stats for a user.
+message GetStatsResponse {
+  // stats is the swimming stats for the user in the requested date range.
+  Stats stats = 1;
+}
+
+service UsersService {
+  // CreateUser
+  //
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/user"
+    };
+  }
+
+  // GetUser
+  //
+  rpc GetUser (GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      get: "/v1/user/{user_id}"
+    };
+  }
+
+  // UpdateUser
+  //
+  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) {
+    option (google.api.http) = {
+      put: "/v1/user/{user_id}"
+    };
+  }
+
+  // DeleteUser
+  //
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {
+      delete: "/v1/user/{user_id}"
+    };
+  }
+}
+
+service SessionsService {
+  // ListSessions
+  //
+  // ListSessions returns the swimming sessions for a user.
+  // The sessions are filtered by date range.
+  // The start_date and end_date are in ISO 8601 format. For example: "2023-05-01"
+  // This is a paginated list of sessions.
+  // The sessions are ordered by date, from the most recent to the oldest.
+  rpc ListSessions (ListSessionsRequest) returns (ListSessionsResponse) {
+    option (google.api.http) = {
+      get: "/v1/user/{user_id}/sessions"
+    };
+  }
+}
+
+service StatsService {
+  // GetStats
+  //
+  // GetStats returns the swimming stats for a user.
+  rpc GetStats (GetStatsRequest) returns (GetStatsResponse) {
+    option (google.api.http) = {
+      get: "/v1/user/{user_id}/stats"
+    };
+  }
+}

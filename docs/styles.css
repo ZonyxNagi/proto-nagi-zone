@@ -1,0 +1,34 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.swagger-ui .topbar {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ddd;
+  background-color: whitesmoke;
+}
+
+.swagger-ui .topbar a {
+  height: 40px;
+  object-position: 0;
+  object-fit: contain;
+  content: url("images/logo.svg");
+}
+
+.swagger-ui .topbar svg {
+  display: inherit;
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label {
+  color: black;
+}
+
+.swagger-ui .info hgroup.main a {
+  display: none;
+}
+
+.swagger-ui .info .base-url {
+  display: none;
+}

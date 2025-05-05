@@ -1,0 +1,654 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Nagi Zone API",
+    "description": "This document describes the Nagi Zone API.\nIt is used to generate the API documentation and client libraries.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Zonyx Nagi",
+      "url": "https://nagi.es",
+      "email": "develop@nagi.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "UsersService"
+    },
+    {
+      "name": "SessionsService"
+    },
+    {
+      "name": "StatsService"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/user": {
+      "post": {
+        "summary": "CreateUser",
+        "operationId": "UsersService_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "name is the name of the user.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "description": "email is the email address of the user.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "photo",
+            "description": "photo is the photo of the user.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/user/{userId}": {
+      "get": {
+        "summary": "GetUser",
+        "operationId": "UsersService_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "description": "user_id is the ID of the user to get.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      },
+      "delete": {
+        "summary": "DeleteUser",
+        "operationId": "UsersService_DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "description": "user_id is the ID of the user to delete.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      },
+      "put": {
+        "summary": "UpdateUser",
+        "operationId": "UsersService_UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "description": "user_id is the ID of the user to identify it.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "name is the new name of the user.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "description": "email is the new email address of the user.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "photo",
+            "description": "photo is the new photo of the user.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "privacyPolicy.version",
+            "description": "version is the current version of the privacy policy.\nThis is the version of the privacy policy accepted by the user.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "privacyPolicy.policyDate",
+            "description": "policy_date is the date when the privacy policy was created.\nThis is the date when the privacy policy was created, in milliseconds since epoch.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "privacyPolicy.businessCommunications",
+            "description": "business_communications is the acceptance of business communications.\nThis is the acceptance of business communications to the user.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "privacyPolicy.marketingSegmentation",
+            "description": "marketing_segmentation is the acceptance of marketing segmentation.\nThis is the acceptance of marketing segmentation for business purposes.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "privacyPolicy.dataTransfer",
+            "description": "data_transfer is the acceptance of data transfer to third parties.\nThis is the acceptance of data transfer to third parties for business purposes.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "ownerIds",
+            "description": "owner_ids is the new list of link IDs for the user.\nThis is the new list of link IDs for the user in the system.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/user/{userId}/sessions": {
+      "get": {
+        "summary": "ListSessions",
+        "description": "ListSessions returns the swimming sessions for a user.\nThe sessions are filtered by date range.\nThe start_date and end_date are in ISO 8601 format. For example: \"2023-05-01\"\nThis is a paginated list of sessions.\nThe sessions are ordered by date, from the most recent to the oldest.",
+        "operationId": "SessionsService_ListSessions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListSessionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "description": "user_id is the ID of the user to get sessions for.\nThis is the ID of the user in the system.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "description": "start_date is the start date for the sessions range in ISO 8601 format.\nFor example: \"2023-05-01\"",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "description": "end_date is the end date for the sessions range in ISO 8601 format.\nFor example: \"2023-05-31\"",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "description": "The offset is the value to use in the next request to continue receiving sessions.\nThis is used for pagination.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "description": "The limit is the maximum number of sessions to return.\nThis is used for pagination.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "SessionsService"
+        ]
+      }
+    },
+    "/v1/user/{userId}/stats": {
+      "get": {
+        "summary": "GetStats",
+        "description": "GetStats returns the swimming stats for a user.",
+        "operationId": "StatsService_GetStats",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetStatsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "description": "user_id is the ID of the user to get stats for.\nThis is the ID of the user in the system.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "description": "start_date is the start date for the stats range in ISO 8601 format.\nFor example: \"2023-05-01\"",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "description": "end_date is the end date for the stats range in ISO 8601 format.\nFor example: \"2023-05-31\"",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StatsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "success indicates if the user creation was successful."
+        }
+      },
+      "description": "CreateUserResponse returns the created user.",
+      "title": "CreateUserResponse"
+    },
+    "v1DeleteUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "success indicates if the deletion was successful."
+        }
+      },
+      "description": "DeleteUserResponse returns if the user deletion was successful.",
+      "title": "DeleteUserResponse"
+    },
+    "v1GetStatsResponse": {
+      "type": "object",
+      "properties": {
+        "stats": {
+          "$ref": "#/definitions/v1Stats",
+          "description": "stats is the swimming stats for the user in the requested date range."
+        }
+      },
+      "description": "GetStatsResponse returns the swimming stats for a user.",
+      "title": "GetStatsResponse"
+    },
+    "v1GetUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User",
+          "description": "user is the requested user."
+        }
+      },
+      "description": "GetUserResponse returns the requested user.",
+      "title": "GetUserResponse"
+    },
+    "v1Lap": {
+      "type": "object",
+      "properties": {
+        "startTime": {
+          "type": "string",
+          "format": "uint64",
+          "description": "start_time is the start time of the lap.\nThis is the time when the lap started, in milliseconds since epoch."
+        },
+        "endTime": {
+          "type": "string",
+          "format": "uint64",
+          "description": "end_time is the end time of the lap.\nThis is the time when the lap ended, in milliseconds since epoch."
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64",
+          "description": "duration is the duration of the lap.\nThis is the time spent swimming the lap, in milliseconds."
+        },
+        "distance": {
+          "type": "integer",
+          "format": "int64",
+          "description": "distance is the distance of the lap.\nThis is the distance swum during the lap, in meters."
+        }
+      },
+      "description": "Lap is a single lap in a swimming session.",
+      "title": "Lap"
+    },
+    "v1ListSessionsResponse": {
+      "type": "object",
+      "properties": {
+        "sessions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Session"
+          },
+          "description": "sessions is the list of sessions for the user.\nThis is a list of Session objects."
+        },
+        "offset": {
+          "type": "string",
+          "description": "offset is the value to use in the next request to continue receiving sessions.\nThis is used for pagination."
+        }
+      },
+      "description": "ListSessionsResponse returns a list of sessions for the user.\nThe list is paginated, and the offset is used to continue receiving sessions.",
+      "title": "ListSessionsResponse"
+    },
+    "v1PrivacyPolicy": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "version is the current version of the privacy policy.\nThis is the version of the privacy policy accepted by the user."
+        },
+        "policyDate": {
+          "type": "string",
+          "format": "uint64",
+          "description": "policy_date is the date when the privacy policy was created.\nThis is the date when the privacy policy was created, in milliseconds since epoch."
+        },
+        "businessCommunications": {
+          "type": "boolean",
+          "description": "business_communications is the acceptance of business communications.\nThis is the acceptance of business communications to the user."
+        },
+        "marketingSegmentation": {
+          "type": "boolean",
+          "description": "marketing_segmentation is the acceptance of marketing segmentation.\nThis is the acceptance of marketing segmentation for business purposes."
+        },
+        "dataTransfer": {
+          "type": "boolean",
+          "description": "data_transfer is the acceptance of data transfer to third parties.\nThis is the acceptance of data transfer to third parties for business purposes."
+        }
+      },
+      "description": "PrivacyPolicy is the privacy policy accepted by the user.",
+      "title": "PrivacyPolicy"
+    },
+    "v1Session": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id is the ID of the session.\nThis is the ID of the session in the system."
+        },
+        "facilityId": {
+          "type": "string",
+          "description": "facility_id is the ID of the facility.\nThis is the ID of the facility where the session took place."
+        },
+        "poolId": {
+          "type": "string",
+          "description": "pool_id is the ID of the pool.\nThis is the ID of the swimming pool where the session took place."
+        },
+        "tagId": {
+          "type": "string",
+          "description": "tag_id is the ID of the tag.\nThis is the ID of the tag used to identify the user in the Quupa system."
+        },
+        "deviceId": {
+          "type": "string",
+          "description": "device_id is the ID to link the session to a user. (wristband/card)\nThis is used to link the session to a user in the system."
+        },
+        "date": {
+          "type": "string",
+          "title": "date is the date of the session in ISO 8601 format.\nFor example: \"2023-05-23T14:30:00Z\""
+        },
+        "startTime": {
+          "type": "string",
+          "format": "uint64",
+          "description": "start_time is the start time of the session.\nThis is the time when the session started, in milliseconds since epoch."
+        },
+        "endTime": {
+          "type": "string",
+          "format": "uint64",
+          "description": "end_time is the end time of the session.\nThis is the time when the session ended, in milliseconds since epoch."
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64",
+          "description": "duration is the duration of the session.\nThis is the time spent swimming and resting, in milliseconds."
+        },
+        "swimTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "swim_time is the swim time of the session.\nThis is the time spent swimming, in milliseconds."
+        },
+        "restTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "rest_time is the rest time of the session.\nThis is the time spent resting, in milliseconds."
+        },
+        "distance": {
+          "type": "integer",
+          "format": "int64",
+          "description": "distance is the distance of the session.\nThis is the distance swum during the session, in meters."
+        },
+        "pace": {
+          "type": "number",
+          "format": "float",
+          "description": "pace is the pace of the session.\nThis is the average pace of the session, in seconds per 100 meters."
+        },
+        "laps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Lap"
+          },
+          "description": "laps is the laps of the session.\nThis is the laps swum during the session."
+        }
+      },
+      "description": "Session is a single swimming session for a user.",
+      "title": "Session"
+    },
+    "v1Stats": {
+      "type": "object",
+      "properties": {
+        "distance": {
+          "type": "integer",
+          "format": "int64",
+          "description": "distance is the total distance swum, in meters."
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64",
+          "description": "duration is the total duration of the sessions, in milliseconds."
+        },
+        "pace": {
+          "type": "number",
+          "format": "float",
+          "description": "pace is the average pace of the sessions, in seconds per 100 meters."
+        },
+        "laps": {
+          "type": "integer",
+          "format": "int64",
+          "description": "laps is the number of laps swum for all sessions."
+        }
+      },
+      "description": "Stats is the swimming stats for a user during a date range.",
+      "title": "Stats"
+    },
+    "v1UpdateUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "success indicates if the update was successful."
+        }
+      },
+      "description": "UpdateUserResponse returns if the user update was successful or not.",
+      "title": "UpdateUserResponse"
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id is the ID of the user."
+        },
+        "name": {
+          "type": "string",
+          "description": "name is the name of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "email is the email address of the user."
+        },
+        "photo": {
+          "type": "string",
+          "description": "photo is the photo of the user.\nThis is the URL of the photo of the user."
+        },
+        "privacyPolicies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1PrivacyPolicy"
+          },
+          "description": "privacy_policies is the list of privacy policies accepted by the user.\nThis is the list of privacy policies accepted by the user."
+        },
+        "deviceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "device_ids is the list of link IDs for the user. (wristband/card)\nThis is the list of link IDs for the user in the system."
+        }
+      },
+      "description": "User represents a user in the system.",
+      "title": "User"
+    }
+  }
+}

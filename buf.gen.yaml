@@ -1,0 +1,18 @@
+version: v1
+managed:
+  enabled: true
+plugins:
+  - plugin: buf.build/protocolbuffers/go
+    out: ./tmp/pkg
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/grpc/go
+    out: ./tmp/pkg
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/grpc-ecosystem/gateway
+    out: ./tmp/pkg
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/grpc-ecosystem/openapiv2
+    out: ./tmp/api
