@@ -62,7 +62,7 @@ message Session {
   string tag_id = 4 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
   // tag_link_id is the ID to link the session to a user. (wristband/card)
   // This is used to link the session to a user in the system.
-  string tag_link_id = 5 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  string tag_link_id = 5 [(buf.validate.field).string = {min_len: 6, max_len: 64}];
   // date is the date of the session in ISO 8601 format.
   // For example: "2023-05-23T14:30:00Z"
   string date = 6 [(buf.validate.field).string = {
