@@ -13,7 +13,7 @@ option go_package = "gen/go";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
       title: "Nagi Zone API";
-      version: "1.0.0";
+      version: "1.1.0";
       contact: {
           name: "Zonyx Nagi";
           url: "https://nagi.es";
@@ -60,9 +60,9 @@ message Session {
   // tag_id is the ID of the tag.
   // This is the ID of the tag used to identify the user in the Quupa system.
   string tag_id = 4 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
-  // device_id is the ID to link the session to a user. (wristband/card)
+  // tag_link_id is the ID to link the session to a user. (wristband/card)
   // This is used to link the session to a user in the system.
-  string device_id = 5 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  string tag_link_id = 5 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
   // date is the date of the session in ISO 8601 format.
   // For example: "2023-05-23T14:30:00Z"
   string date = 6 [(buf.validate.field).string = {
@@ -121,25 +121,23 @@ message PrivacyPolicy {
 message User {
   // id is the ID of the user.
   string id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
-  // name is the name of the user.
-  string name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // full_name is the full name of the user.
+  string full_name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
   // email is the email address of the user.
   string email = 3 [(buf.validate.field).string.email = true];
   // photo is the photo of the user.
-  // This is the URL of the photo of the user.
-  string photo = 4 [(buf.validate.field).string = {min_len: 1, max_len: 128}];
+  // This is the binary content of the user's photo.
+  bytes photo = 4 [(buf.validate.field).bytes = {min_len: 1, max_len: 2097152}]; // max 2MB
   // privacy_policies is the list of privacy policies accepted by the user.
   // This is the list of privacy policies accepted by the user.
   repeated PrivacyPolicy privacy_policies = 5;
-  // device_ids is the list of link IDs for the user. (wristband/card)
-  // This is the list of link IDs for the user in the system.
-  repeated string device_ids = 6 [(buf.validate.field).repeated = {
+  // tag_link_ids is the list of tag link IDs for the user. (wristband/card)
+  // This is the list of tag link IDs for the user in the system.
+  repeated string tag_link_ids = 6 [(buf.validate.field).repeated = {
     items: {string: {min_len: 6, max_len: 64}}
   }];
 }
 
-// Stats
-//
 // Stats is the swimming stats for a user during a date range.
 message Stats {
   // distance is the total distance swum, in meters.
@@ -157,12 +155,12 @@ message Stats {
 // CreateUserRequest is the request message for creating a new user.
 message CreateUserRequest {
   string id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
-  // name is the name of the user.
-  string name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // full_name is the full name of the user.
+  string full_name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
   // email is the email address of the user.
   string email = 3 [(buf.validate.field).string.email = true];
   // photo is the photo of the user.
-  optional string photo = 4 [(buf.validate.field).string = {min_len: 1, max_len: 128}];
+  optional bytes photo = 4 [(buf.validate.field).bytes = {min_len: 1, max_len: 2097152}]; // max 2MB
 }
 
 // CreateUserResponse
@@ -195,17 +193,17 @@ message GetUserResponse {
 message UpdateUserRequest {
   // user_id is the ID of the user to identify it.
   string user_id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
-  // name is the new name of the user.
-  optional string name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  // full_name is the new name of the user.
+  optional string full_name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
   // email is the new email address of the user.
   optional string email = 3 [(buf.validate.field).string.email = true];
   // photo is the new photo of the user.
-  optional string photo = 4 [(buf.validate.field).string = {min_len: 1, max_len: 128}];
+  optional bytes photo = 4 [(buf.validate.field).bytes = {min_len: 1, max_len: 2097152}]; // max 2MB
   // privacy_policy is the new privacy policies accepted by the user.
   optional PrivacyPolicy privacy_policy = 5;
-  // owner_ids is the new list of link IDs for the user.
-  // This is the new list of link IDs for the user in the system.
-  repeated string owner_ids = 6 [(buf.validate.field).repeated = {items: {string: {min_len: 1, max_len: 128}}}];
+  // tag_link_ids is the new list of tag link IDs for the user.
+  // This is the new list of tag link IDs for the user in the system.
+  repeated string tag_link_ids = 6 [(buf.validate.field).repeated = {items: {string: {min_len: 6, max_len: 64}}}];
 }
 
 // UpdateUserResponse
@@ -230,6 +228,22 @@ message DeleteUserRequest {
 message DeleteUserResponse {
   // success indicates if the deletion was successful.
   bool success = 1;
+}
+
+// GetUserByTagLinkRequest
+//
+// GetUserByTagLinkRequest is the request message for getting a user by tag link ID.
+message GetUserByTagLinkRequest {
+  // tag_link_id is the ID of the tag link to find the user for.
+  string tag_link_id = 1 [(buf.validate.field).string = {min_len: 6, max_len: 64}];
+}
+
+// GetUserByTagLinkResponse
+//
+// GetUserByTagLinkResponse returns the user associated with the tag link ID.
+message GetUserByTagLinkResponse {
+  // user is the user associated with the tag link ID.
+  User user = 1;
 }
 
 // ListSessionsRequest
@@ -327,6 +341,14 @@ service UsersService {
   rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {
     option (google.api.http) = {
       delete: "/v1/user/{user_id}"
+    };
+  }
+
+  // GetUserByTagLink
+  //
+  rpc GetUserByTagLink (GetUserByTagLinkRequest) returns (GetUserByTagLinkResponse) {
+    option (google.api.http) = {
+      get: "/v1/users"
     };
   }
 }
