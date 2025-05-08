@@ -125,9 +125,8 @@ message User {
   string full_name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
   // email is the email address of the user.
   string email = 3 [(buf.validate.field).string.email = true];
-  // photo is the photo of the user.
-  // This is the binary content of the user's photo.
-  bytes photo = 4 [(buf.validate.field).bytes = {min_len: 1, max_len: 2097152}]; // max 2MB
+  // photo is the URL of the photo of the user.
+  string photo = 4 [(buf.validate.field).string = {min_len: 1, max_len: 128}];
   // privacy_policies is the list of privacy policies accepted by the user.
   // This is the list of privacy policies accepted by the user.
   repeated PrivacyPolicy privacy_policies = 5;
@@ -197,8 +196,9 @@ message UpdateUserRequest {
   optional string full_name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
   // email is the new email address of the user.
   optional string email = 3 [(buf.validate.field).string.email = true];
-  // photo is the new photo of the user.
-  optional bytes photo = 4 [(buf.validate.field).bytes = {min_len: 1, max_len: 2097152}]; // max 2MB
+  // photo is the new photo of the user, as binary content
+  // (an empty array means deleting the current photo, if any)
+  optional bytes photo = 4 [(buf.validate.field).bytes = {min_len: 0, max_len: 2097152}]; // max 2MB
   // privacy_policy is the new privacy policies accepted by the user.
   optional PrivacyPolicy privacy_policy = 5;
   // tag_link_ids is the new list of tag link IDs for the user.
