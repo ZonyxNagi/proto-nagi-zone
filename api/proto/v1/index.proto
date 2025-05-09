@@ -13,7 +13,7 @@ option go_package = "gen/go";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
       title: "Nagi Zone API";
-      version: "1.1.0";
+      version: "0.1.0";
       contact: {
           name: "Zonyx Nagi";
           url: "https://nagi.es";
@@ -315,7 +315,7 @@ service UsersService {
   //
   rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {
     option (google.api.http) = {
-      post: "/v1/user"
+      post: "/v0/user"
     };
   }
 
@@ -323,7 +323,7 @@ service UsersService {
   //
   rpc GetUser (GetUserRequest) returns (GetUserResponse) {
     option (google.api.http) = {
-      get: "/v1/users/{user_id}"
+      get: "/v0/users/{user_id}"
     };
   }
 
@@ -331,7 +331,7 @@ service UsersService {
   //
   rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) {
     option (google.api.http) = {
-      put: "/v1/users/{user_id}"
+      put: "/v0/users/{user_id}"
     };
   }
 
@@ -339,7 +339,7 @@ service UsersService {
   //
   rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {
     option (google.api.http) = {
-      delete: "/v1/users/{user_id}"
+      delete: "/v0/users/{user_id}"
     };
   }
 
@@ -347,7 +347,7 @@ service UsersService {
   //
   rpc GetUserByTagLink (GetUserByTagLinkRequest) returns (GetUserByTagLinkResponse) {
     option (google.api.http) = {
-      get: "/v1/users"
+      get: "/v0/users"
     };
   }
 }
@@ -362,7 +362,7 @@ service SessionsService {
   // The sessions are ordered by date, from the most recent to the oldest.
   rpc ListSessions (ListSessionsRequest) returns (ListSessionsResponse) {
     option (google.api.http) = {
-      get: "/v1/users/{user_id}/sessions"
+      get: "/v0/users/{user_id}/sessions"
     };
   }
 }
@@ -373,7 +373,7 @@ service StatsService {
   // GetStats returns the swimming stats for a user.
   rpc GetStats (GetStatsRequest) returns (GetStatsResponse) {
     option (google.api.http) = {
-      get: "/v1/users/{user_id}/stats"
+      get: "/v0/users/{user_id}/stats"
     };
   }
 }
