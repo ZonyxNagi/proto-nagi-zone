@@ -62,7 +62,7 @@ message Session {
   string tag_id = 4 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
   // tag_link_id is the ID to link the session to a user. (wristband/card)
   // This is used to link the session to a user in the system.
-  string tag_link_id = 5 [(buf.validate.field).string = {min_len: 6, max_len: 64}];
+  string tag_link_id = 5 [(buf.validate.field).string = {min_len: 1, max_len:32}];
   // date is the date of the session in ISO 8601 format.
   // For example: "2023-05-23T14:30:00Z"
   string date = 6 [(buf.validate.field).string = {
@@ -133,7 +133,7 @@ message User {
   // tag_link_ids is the list of tag link IDs for the user. (wristband/card)
   // This is the list of tag link IDs for the user in the system.
   repeated string tag_link_ids = 6 [(buf.validate.field).repeated = {
-    items: {string: {min_len: 6, max_len: 64}}
+    items: {string: {min_len: 1, max_len:32}}
   }];
 }
 
@@ -158,8 +158,8 @@ message CreateUserRequest {
   string full_name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
   // email is the email address of the user.
   string email = 3 [(buf.validate.field).string.email = true];
-  // photo is the photo of the user.
-  optional bytes photo = 4 [(buf.validate.field).bytes = {min_len: 1, max_len: 2097152}]; // max 2MB
+  // photo is the photo URL of the user.
+  optional string photo = 4 [(buf.validate.field).string = {min_len: 1, max_len: 128}];
 }
 
 // CreateUserResponse
@@ -196,14 +196,13 @@ message UpdateUserRequest {
   optional string full_name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
   // email is the new email address of the user.
   optional string email = 3 [(buf.validate.field).string.email = true];
-  // photo is the new photo of the user, as binary content
-  // (an empty array means deleting the current photo, if any)
-  optional bytes photo = 4 [(buf.validate.field).bytes = {min_len: 0, max_len: 2097152}]; // max 2MB
+  // photo is the new photo URL of the user
+  optional string photo = 4 [(buf.validate.field).string = {min_len: 1, max_len: 128}];
   // privacy_policy is the new privacy policies accepted by the user.
   optional PrivacyPolicy privacy_policy = 5;
   // tag_link_ids is the new list of tag link IDs for the user.
   // This is the new list of tag link IDs for the user in the system.
-  repeated string tag_link_ids = 6 [(buf.validate.field).repeated = {items: {string: {min_len: 6, max_len: 64}}}];
+  repeated string tag_link_ids = 6 [(buf.validate.field).repeated = {items: {string: {min_len: 1, max_len:32}}}];
 }
 
 // UpdateUserResponse
@@ -235,7 +234,7 @@ message DeleteUserResponse {
 // GetUserByTagLinkRequest is the request message for getting a user by tag link ID.
 message GetUserByTagLinkRequest {
   // tag_link_id is the ID of the tag link to find the user for.
-  string tag_link_id = 1 [(buf.validate.field).string = {min_len: 6, max_len: 64}];
+  string tag_link_id = 1 [(buf.validate.field).string = {min_len: 1, max_len:32}];
 }
 
 // GetUserByTagLinkResponse
@@ -324,7 +323,7 @@ service UsersService {
   //
   rpc GetUser (GetUserRequest) returns (GetUserResponse) {
     option (google.api.http) = {
-      get: "/v1/user/{user_id}"
+      get: "/v1/users/{user_id}"
     };
   }
 
@@ -332,7 +331,7 @@ service UsersService {
   //
   rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) {
     option (google.api.http) = {
-      put: "/v1/user/{user_id}"
+      put: "/v1/users/{user_id}"
     };
   }
 
@@ -340,7 +339,7 @@ service UsersService {
   //
   rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {
     option (google.api.http) = {
-      delete: "/v1/user/{user_id}"
+      delete: "/v1/users/{user_id}"
     };
   }
 
@@ -363,7 +362,7 @@ service SessionsService {
   // The sessions are ordered by date, from the most recent to the oldest.
   rpc ListSessions (ListSessionsRequest) returns (ListSessionsResponse) {
     option (google.api.http) = {
-      get: "/v1/user/{user_id}/sessions"
+      get: "/v1/users/{user_id}/sessions"
     };
   }
 }
@@ -374,7 +373,7 @@ service StatsService {
   // GetStats returns the swimming stats for a user.
   rpc GetStats (GetStatsRequest) returns (GetStatsResponse) {
     option (google.api.http) = {
-      get: "/v1/user/{user_id}/stats"
+      get: "/v1/users/{user_id}/stats"
     };
   }
 }
