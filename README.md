@@ -1,1 +1,1 @@
-# proto-nagi-zone
+# specs-nagi-zone
